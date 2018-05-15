@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import ActivityCard from '../components/activities/ActivityCard';
 import Page from './Page';
@@ -8,8 +10,13 @@ import Stats from '../components/sidebar/Stats';
 import activities from '../fixtures/activities';
 import stats from '../fixtures/stats';
 import filterActivities from '../helpers/filterActivities';
+import { verifyActivity } from '../actions/verifyActivityActions';
 
 class VerifyActivities extends Component {
+  static propTypes = {
+    verifyActivity: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -19,6 +26,10 @@ class VerifyActivities extends Component {
       initialStatus: 'All',
       showUserDetails: true,
     };
+  }
+
+  handleClick = (isApproved, activityId) => {
+    this.props.verifyActivity(isApproved, activityId);
   }
 
   /**
@@ -32,6 +43,7 @@ class VerifyActivities extends Component {
        selectedStatus: status,
      });
    };
+
 
   /**
    * @name VerifyActivities
@@ -61,6 +73,8 @@ class VerifyActivities extends Component {
                        points={activity.points}
                        status={activity.status}
                        showUserDetails={showUserDetails}
+                       page='verify-activities'
+                       handleClick={this.handleClick}
                      />
                    ))
                  }
@@ -78,4 +92,8 @@ class VerifyActivities extends Component {
    }
 }
 
-export default VerifyActivities;
+const mapDispatchToProps = dispatch => ({
+  verifyActivity: (isApproved, activityId) => dispatch(verifyActivity(isApproved, activityId)),
+});
+
+export default connect(null, mapDispatchToProps)(VerifyActivities);

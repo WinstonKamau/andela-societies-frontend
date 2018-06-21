@@ -2,12 +2,14 @@ const express = require('express');
 const logger = require('morgan');
 const compress = require('compression');
 const path = require('path');
+const redirectToHTTPS = require('express-http-to-https');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.set('views', 'public');
 
+app.use(redirectToHTTPS.redirectToHTTPS());
 app.use(compress());
 app.use(logger('tiny'));
 app.use(express.static('public'));

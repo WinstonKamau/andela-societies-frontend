@@ -49,6 +49,7 @@
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint-loader": "^1.9.0",
     "express": "^4.16.2",
+    "express-http-to-https": "^1.1.4",
     "file-loader": "^1.1.11",
     "history": "^4.7.2",
     "html-webpack-plugin": "^2.30.1",

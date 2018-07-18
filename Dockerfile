@@ -6,16 +6,10 @@ LABEL application="soc-frontend"
 #due to the rapid changes the serve team is making please 
 #use this version of serve
 
-RUN yarn global add express@4.16.2
+RUN yarn global add servir@1.0.3
 
 WORKDIR /application
 
 COPY public /application
 
-COPY prodserver /application
-
-ENV NODE_PATH /usr/local/share/.config/yarn/global/node_modules/
-
-RUN chmod +x ./prodserver
-
-CMD ./prodserver 4000
+CMD serve -p 4000 -s true

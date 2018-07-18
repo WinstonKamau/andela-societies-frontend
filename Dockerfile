@@ -12,4 +12,4 @@ WORKDIR /application
 
 COPY public /application
 
-CMD serve -p 4000 -s true
+CMD serve -p 4000 -s true -l true

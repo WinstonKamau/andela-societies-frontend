@@ -34,6 +34,7 @@ set_variables() {
             ;;
         *)
             echo "Err: This branch should not deploy."
+            exit 1
             ;;
     esac
 }

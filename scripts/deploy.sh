@@ -16,7 +16,7 @@ set_variables() {
             DEPLOYMENT_NAME="${ENVIRONMENT}-${PROJECT_NAME}"
             export NODE_ENV=production
             ;;
-        staging)
+        develop)
             IMAGE_TAG="staging-${COMMIT_HASH}"
             ENVIRONMENT=staging
             GOOGLE_COMPUTE_ZONE=${STAGING_ZONE}

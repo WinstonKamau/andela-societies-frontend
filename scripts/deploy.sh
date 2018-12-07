@@ -7,19 +7,35 @@ PROJECT_NAME=soc-frontend
 set_variables() {
     COMMIT_HASH=$(git rev-parse --short HEAD)
 
-    if [ "$CIRCLE_BRANCH" == "master" ]; then
-        IMAGE_TAG="production-${COMMIT_HASH}"
-        ENVIRONMENT=production
-        GOOGLE_COMPUTE_ZONE=${PRODUCTION_ZONE}
-        GOOGLE_CLUSTER_NAME=${PRODUCTION_CLUSTER_NAME}
-        export NODE_ENV=production
-    else
-        IMAGE_TAG="staging-${COMMIT_HASH}"
-        ENVIRONMENT=staging
-        GOOGLE_COMPUTE_ZONE=${STAGING_ZONE}
-        GOOGLE_CLUSTER_NAME=${STAGING_CLUSTER_NAME}
-        export NODE_ENV=staging
-    fi
+    case "$CIRCLE_BRANCH" in
+        master)
+            IMAGE_TAG="production-${COMMIT_HASH}"
+            ENVIRONMENT=production
+            GOOGLE_COMPUTE_ZONE=${PRODUCTION_ZONE}
+            GOOGLE_CLUSTER_NAME=${PRODUCTION_CLUSTER_NAME}
+            DEPLOYMENT_NAME="${ENVIRONMENT}-${PROJECT_NAME}"
+            export NODE_ENV=production
+            ;;
+        staging)
+            IMAGE_TAG="staging-${COMMIT_HASH}"
+            ENVIRONMENT=staging
+            GOOGLE_COMPUTE_ZONE=${STAGING_ZONE}
+            GOOGLE_CLUSTER_NAME=${STAGING_CLUSTER_NAME}
+            DEPLOYMENT_NAME="${ENVIRONMENT}-${PROJECT_NAME}"
+            export NODE_ENV=staging
+            ;;
+        design)
+            IMAGE_TAG="design-${COMMIT_HASH}"
+            ENVIRONMENT=staging
+            GOOGLE_COMPUTE_ZONE=${STAGING_ZONE}
+            GOOGLE_CLUSTER_NAME=${STAGING_CLUSTER_NAME}
+            DEPLOYMENT_NAME="design-${PROJECT_NAME}"
+            export NODE_ENV=design
+            ;;
+        *)
+            echo "Err: This branch should not deploy."
+            ;;
+    esac
 }
 authorize_docker() {
     echo "====> Store Sand authenticate with service account"
@@ -62,11 +78,9 @@ deploy_to_kubernetes(){
      echo "====> Prepare image for deployement"
 
     IMAGE="${DOCKER_REGISTRY}/${GOOGLE_PROJECT_ID}/${PROJECT_NAME}:${IMAGE_TAG}"
-    DEPLOYMENT_NAME="${ENVIRONMENT}-${PROJECT_NAME}"
     echo "====> Deploying ${IMAGE} to ${DEPLOYMENT_NAME} in ${ENVIRONMENT} environment"
 
-
-    kubectl set image deployment/${DEPLOYMENT_NAME} frontend=${IMAGE} -n "${ENVIRONMENT}"
+    # kubectl set image deployment/${DEPLOYMENT_NAME} frontend=${IMAGE} -n "${ENVIRONMENT}"
 
     if [ "$?" == "0" ]; then
         echo "Deployment completed succesfully"

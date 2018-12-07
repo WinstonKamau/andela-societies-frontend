@@ -82,3 +82,5 @@ workflows:
               only:
                 - master
                 - develop
+                - design
+                - ft-create-design-branch-162496788
